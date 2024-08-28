@@ -82,10 +82,40 @@ func Each[S ~[]E, E any](s S, f eachFn[E]) {
 	}
 }
 
+func EachRight[S ~[]E, E any](s S, f eachFn[E]) {
+	for i := len(s) - 1; i >= 0; i-- {
+		f(s[i])
+	}
+}
+
 type eachMapFn[K comparable, V any] func(K, V)
 
 func EachMap[M ~map[K]V, K comparable, V any](m M, f eachMapFn[K, V]) {
 	for k, v := range m {
 		f(k, v)
 	}
+}
+
+// everyFn 是一个用于检查元素是否满足条件的函数类型
+type everyFn[E any] func(E) bool
+
+func Every[S ~[]E, E any](s S, f everyFn[E]) bool {
+	for _, v := range s {
+		if !f(v) {
+			return false
+		}
+	}
+	return true
+}
+
+// everyMapFn 是一个用于检查键值对是否满足条件的函数类型
+type everyMapFn[K comparable, V any] func(K, V) bool
+
+func EveryMap[M ~map[K]V, K comparable, V any](m M, f everyMapFn[K, V]) bool {
+	for k, v := range m {
+		if !f(k, v) {
+			return false
+		}
+	}
+	return true
 }

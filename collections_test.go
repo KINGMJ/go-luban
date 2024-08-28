@@ -8,9 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// -----------------------
-// map slice test
-// -----------------------
 func TestMapIntToInt(t *testing.T) {
 	numbers := []int{1, 2, 3}
 	expected := []int{2, 4, 6}
@@ -60,9 +57,6 @@ func TestMapStructToStruct(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
-// -----------------------
-// map map test
-// -----------------------
 func TestMapMapToMap(t *testing.T) {
 	dict := map[string]int{"one": 1, "two": 2, "three": 3}
 	expected := map[string]string{"one": "one=1", "two": "two=2", "three": "three=3"}
@@ -73,10 +67,6 @@ func TestMapMapToMap(t *testing.T) {
 
 	assert.Equal(t, expected, result)
 }
-
-// -----------------------
-// filter slice test
-// -----------------------
 
 func TestFilterSliceInt(t *testing.T) {
 	numbers := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -181,6 +171,17 @@ func TestEach(t *testing.T) {
 	assert.Equal(t, 15, sum)
 }
 
+func TestEachRight(t *testing.T) {
+	numbers := []int{1, 2, 3, 4, 5}
+	expected := []int{5, 4, 3, 2, 1}
+
+	var result []int
+	luban.EachRight(numbers, func(x int) {
+		result = append(result, x)
+	})
+	assert.Equal(t, expected, result)
+}
+
 func TestEachMap(t *testing.T) {
 	dict := map[string]int{"one": 1, "two": 2, "three": 3}
 	keys := []string{}
@@ -196,4 +197,50 @@ func TestEachMap(t *testing.T) {
 
 	assert.ElementsMatch(t, expectedKeys, keys)
 	assert.ElementsMatch(t, expectedValues, values)
+}
+
+func TestEvery(t *testing.T) {
+	// 所有元素大于0
+	numbers := []int{1, 2, 3, 4, 5}
+	result := luban.Every(numbers, func(n int) bool {
+		return n > 0
+	})
+	assert.True(t, result)
+
+	// 其中有一个元素小于0
+	numbers = []int{1, -2, 3, 4, 5}
+	result = luban.Every(numbers, func(n int) bool {
+		return n > 0
+	})
+	assert.False(t, result)
+
+	// 空切片
+	numbers = []int{}
+	result = luban.Every(numbers, func(n int) bool {
+		return n > 0
+	})
+	assert.True(t, result)
+}
+
+func TestEveryMap(t *testing.T) {
+	// 所有值大于0
+	dict := map[string]int{"a": 1, "b": 2, "c": 3}
+	result := luban.EveryMap(dict, func(k string, v int) bool {
+		return v > 0
+	})
+	assert.True(t, result)
+
+	// 其中有一个值小于0
+	dict = map[string]int{"a": 1, "b": -2, "c": 3}
+	result = luban.EveryMap(dict, func(k string, v int) bool {
+		return v > 0
+	})
+	assert.False(t, result)
+
+	// 空 map 应该返回 true
+	dict = map[string]int{}
+	result = luban.EveryMap(dict, func(k string, v int) bool {
+		return v > 0
+	})
+	assert.True(t, result)
 }
