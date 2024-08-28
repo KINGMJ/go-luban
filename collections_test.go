@@ -121,3 +121,79 @@ func TestFilterMapStringKey(t *testing.T) {
 
 	assert.Equal(t, expected, result)
 }
+
+func TestReduceSum(t *testing.T) {
+	numbers := []int{1, 2, 3, 4, 5}
+	expected := 15
+
+	result := luban.Reduce(numbers, func(acc, x int) int {
+		return acc + x
+	}, 0)
+
+	assert.Equal(t, expected, result)
+}
+
+func TestReduceConcat(t *testing.T) {
+	words := []string{"Hello", "World", "!"}
+	expected := "HelloWorld!"
+
+	result := luban.Reduce(words, func(acc, s string) string {
+		return acc + s
+	}, "")
+
+	assert.Equal(t, expected, result)
+}
+
+func TestReduceMapToSum(t *testing.T) {
+	dict := map[string]int{"one": 1, "two": 2, "three": 3}
+	expected := 6
+
+	result := luban.ReduceMap(dict, func(acc int, k string, v int) int {
+		return acc + v
+	}, 0)
+
+	assert.Equal(t, expected, result)
+}
+
+func TestReduceMapToSlice(t *testing.T) {
+	dict := map[string]int{"one": 1, "two": 2, "three": 3}
+	expected := []string{"one:1", "two:2", "three:3"}
+
+	result := luban.ReduceMap(dict, func(acc []string, k string, v int) []string {
+		value := fmt.Sprintf("%s:%d", k, v)
+		if len(acc) == 0 {
+			return []string{value}
+		}
+		return append(acc, value)
+	}, nil)
+
+	assert.Equal(t, expected, result)
+}
+
+func TestEach(t *testing.T) {
+	numbers := []int{1, 2, 3, 4, 5}
+	sum := 0
+
+	luban.Each(numbers, func(x int) {
+		sum += x
+	})
+
+	assert.Equal(t, 15, sum)
+}
+
+func TestEachMap(t *testing.T) {
+	dict := map[string]int{"one": 1, "two": 2, "three": 3}
+	keys := []string{}
+	values := []int{}
+
+	luban.EachMap(dict, func(k string, v int) {
+		keys = append(keys, k)
+		values = append(values, v)
+	})
+
+	expectedKeys := []string{"one", "two", "three"}
+	expectedValues := []int{1, 2, 3}
+
+	assert.ElementsMatch(t, expectedKeys, keys)
+	assert.ElementsMatch(t, expectedValues, values)
+}

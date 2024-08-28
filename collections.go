@@ -51,3 +51,41 @@ func FilterMap[M ~map[K]V, K comparable, V any](m M, f filterMapFn[K, V]) M {
 	}
 	return result
 }
+
+// reduceFn 是一个通用的归约函数类型，它接受一个累加器类型为 R 和一个当前元素类型为 E，并返回一个新的累加器类型为 R
+type reduceFn[E any, R any] func(R, E) R
+
+func Reduce[S ~[]E, E any, R any](s S, f reduceFn[E, R], initial R) R {
+	result := initial
+	for _, v := range s {
+		result = f(result, v)
+	}
+	return result
+}
+
+type reduceMapFn[K comparable, V any, R any] func(R, K, V) R
+
+func ReduceMap[M ~map[K]V, K comparable, V any, R any](m M, f reduceMapFn[K, V, R], initial R) R {
+	result := initial
+	for k, v := range m {
+		result = f(result, k, v)
+	}
+	return result
+}
+
+// eachFn 是一个接受一个元素并对其执行操作的函数类型
+type eachFn[E any] func(E)
+
+func Each[S ~[]E, E any](s S, f eachFn[E]) {
+	for _, v := range s {
+		f(v)
+	}
+}
+
+type eachMapFn[K comparable, V any] func(K, V)
+
+func EachMap[M ~map[K]V, K comparable, V any](m M, f eachMapFn[K, V]) {
+	for k, v := range m {
+		f(k, v)
+	}
+}
