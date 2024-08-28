@@ -1,10 +1,19 @@
 # go-luban
+A modern and type-safe Go utility library providing a collection of helpers (Map, Filter, Reduce, Each, Every, ...) based on Go generics.
 
-`go-luban` 是一个基于泛型的现代 Go 工具库，参考了 [go-funk](https://github.com/thoas/go-funk)、[Lodash](https://www.lodashjs.com/) 等现代工具库。
+## Description
+`go-luban` is a utility library designed to simplify common operations on collections such as arrays, slices, and maps. It is built using Go's powerful generics, making it both modern and type-safe. This library draws inspiration from JavaScript's Lodash and the Go-funk library, but with significant improvements in safety and usability.
 
-## TODO
+## Why go-luban?
+- **Generics-Powered**: Unlike traditional utility libraries that rely on reflection, `go-luban` leverages Go's generics to offer type safety and performance.
 
-### 集合操作
+- **Enhanced Safety**: go-luban addresses the shortcomings of libraries like Go-funk, where the use of `any` types often led to nil pointer exceptions. By ensuring type safety, `go-luban` reduces the risk of runtime errors.
+
+- **Modern API**: With a focus on simplicity and ease of use, `go-luban` provides a clean and intuitive API for developers. Functions like `Map`, `Filter`, `Reduce`, `Each`, and `Every` work seamlessly with your data structures, offering the flexibility you need without compromising on safety.
+
+## Features
+
+### Collections
 
 - [x] Map
 - [x] Filter
@@ -12,12 +21,10 @@
 - [x] Each
 - [x] EachRight
 - [x] Every
-
-
 - [ ] Find
 - [ ] FindIndex
 
-### 集合操作（Map）
+### Collections (Map)
 
 - [x] MapMap
 - [x] FilterMap
@@ -25,27 +32,18 @@
 - [x] EachMap
 - [x] EveryMap
 
+## Installation
+To install `go-luban`, use `go get`:
 
-### 字符串处理
+```
+go get github.com/KINGMJ/go-luban
+```
 
+## Documentation
+For detailed documentation, examples, and API references, please visit the go-luban documentation.
 
+## Contributing
+Contributions are welcome! Please submit issues and pull requests on the GitHub repository.
 
-### 函数组合
-
-- [ ] 柯里化
-- [ ] 组合
-
-
-
-### 深拷贝
-
-### 其他常用工具
-
-
-
-
-
-
-## 注：
-
-1. 对于空切片的行为，通常情况下，`Every` 函数对于空切片或空 map 返回 true，因为没有元素可以违反条件。像 js 的 `every` 函数、lodash 的 `every` 都是返回 true。这一点与 `go-funk` 不同，`go-funk` 对于空切片或空 map 返回 false。
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
