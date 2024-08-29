@@ -21,8 +21,8 @@ A modern and type-safe Go utility library providing a collection of helpers (Map
 - [x] Each
 - [x] EachRight
 - [x] Every
-- [ ] Find
-- [ ] FindIndex
+- [x] Some
+- [x] Find
 
 ### Collections (Map)
 
@@ -31,6 +31,8 @@ A modern and type-safe Go utility library providing a collection of helpers (Map
 - [x] ReduceMap
 - [x] EachMap
 - [x] EveryMap
+- [x] SomeMap
+- [x] FindMap
 
 ## Installation
 To install `go-luban`, use `go get`:
@@ -38,6 +40,18 @@ To install `go-luban`, use `go get`:
 ```
 go get github.com/KINGMJ/go-luban
 ```
+
+## Note
+
+### 1. Behavior of `Every` and `Some` with Empty Slices and Maps
+By design, the `Every` function returns `true` for empty slices or empty maps because there are no elements to violate the condition. This behavior is consistent with functions like JavaScript's `every` and Lodash's `every`, both of which return `true` for empty collections. This is different from `go-funk`, which returns `false` for empty slices or maps.
+
+On the other hand, `Some` checks whether **any element satisfies the condition**. For empty slices or maps, since there are no elements to check, it returns `false`.
+
+This logic is widely adopted in many programming languages, including `JavaScript` and `Python`, ensuring consistency and predictability.
+
+### 2. `Find` Function
+Since Golang supports multiple return values, the Find function can directly return the key and value of the found element, making it unnecessary to use a FindIndex function.
 
 ## Documentation
 For detailed documentation, examples, and API references, please visit the go-luban documentation.

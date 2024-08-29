@@ -119,3 +119,50 @@ func EveryMap[M ~map[K]V, K comparable, V any](m M, f everyMapFn[K, V]) bool {
 	}
 	return true
 }
+
+type someFn[E any] func(E) bool
+
+func Some[S ~[]E, E any](s S, f someFn[E]) bool {
+	for _, v := range s {
+		if f(v) {
+			return true
+		}
+	}
+	return false
+}
+
+type someMapFn[K comparable, V any] func(K, V) bool
+
+func SomeMap[M ~map[K]V, K comparable, V any](m M, f someMapFn[K, V]) bool {
+	for k, v := range m {
+		if f(k, v) {
+			return true
+		}
+	}
+	return false
+}
+
+type findFn[E any] func(E) bool
+
+func Find[S ~[]E, E any](s S, f findFn[E]) (int, E) {
+	for i, v := range s {
+		if f(v) {
+			return i, v
+		}
+	}
+	var zeroValue E
+	return -1, zeroValue
+}
+
+type findMapFn[K comparable, V any] func(K, V) bool
+
+func FindMap[M ~map[K]V, K comparable, V any](m M, f findMapFn[K, V]) (K, V) {
+	for k, v := range m {
+		if f(k, v) {
+			return k, v
+		}
+	}
+	var zeroK K
+	var zeroV V
+	return zeroK, zeroV
+}

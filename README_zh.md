@@ -20,8 +20,7 @@
 - [x] Each
 - [x] EachRight
 - [x] Every
-- [ ] Find
-- [ ] FindIndex
+- [x] Find
 
 ### 集合操作（Map）
 
@@ -30,7 +29,7 @@
 - [x] ReduceMap
 - [x] EachMap
 - [x] EveryMap
-
+- [x] FindMap
 
 ### 字符串处理
 
@@ -53,4 +52,14 @@ go get github.com/KINGMJ/go-luban
 
 ## 注意：
 
-1. 对于空切片的行为，通常情况下，`Every` 函数对于空切片或空 map 返回 true，因为没有元素可以违反条件。像 js 的 `every` 函数、lodash 的 `every` 都是返回 true。这一点与 `go-funk` 不同，`go-funk` 对于空切片或空 map 返回 false。
+### 1. 关于`Every`与`Some`对于空切片与空 map 的行为
+
+通常情况下，`Every` 函数对于空切片或空 map 返回 true，因为没有元素可以违反条件。像 js 的 `every` 函数、lodash 的 `every` 都是返回 true。这一点与 `go-funk` 不同，`go-funk` 对于空切片或空 map 返回 false。
+
+`Some` 检查的是**是否有任何元素满足条件**，对于空切片或空 map 来说，因为没有元素可供检查，所以它返回 false。
+
+这种逻辑在许多编程语言（包括 JavaScript、Python 等）中都被广泛采用，确保了一致性和可预测性。
+
+### 2. `Find` 函数
+
+由于golang支持多返回值，所以`Find`函数可以直接返回找到元素的`key`和`value`，无需再使用`FindIndex`函数。

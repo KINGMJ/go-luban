@@ -39,6 +39,25 @@ func TestMapEmptySlice(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
+func TestMapStructToSlice(t *testing.T) {
+	type Person struct {
+		Name string
+		Age  int
+	}
+	persons := []Person{
+		{"John", 25},
+		{"Amy", 30},
+		{"Bob", 40},
+	}
+	expected := []string{"John", "Amy", "Bob"}
+
+	result := luban.Map(persons, func(p Person) string {
+		return p.Name
+	})
+
+	assert.Equal(t, expected, result)
+}
+
 func TestMapStructToStruct(t *testing.T) {
 	type A struct {
 		Num int
@@ -243,4 +262,66 @@ func TestEveryMap(t *testing.T) {
 		return v > 0
 	})
 	assert.True(t, result)
+}
+
+func TestSome(t *testing.T) {
+	numbers := []int{1, 2, 3, 4, 5}
+	isEven := func(x int) bool { return x%2 == 0 }
+	isNegative := func(x int) bool { return x < 0 }
+
+	assert.True(t, luban.Some(numbers, isEven))
+	assert.False(t, luban.Some(numbers, isNegative))
+
+	emptySlice := []int{}
+	assert.False(t, luban.Some(emptySlice, isEven))
+}
+
+func TestSomeMap(t *testing.T) {
+	m := map[string]int{
+		"one":   1,
+		"two":   2,
+		"three": 3,
+	}
+	containsTwo := func(k string, v int) bool { return v == 2 }
+	containsZero := func(k string, v int) bool { return v == 0 }
+
+	assert.True(t, luban.SomeMap(m, containsTwo))
+	assert.False(t, luban.SomeMap(m, containsZero))
+
+	emptyMap := map[string]int{}
+	assert.False(t, luban.SomeMap(emptyMap, containsTwo))
+}
+
+func TestFind(t *testing.T) {
+	numbers := []int{1, 2, 3, 4, 5}
+	index, value := luban.Find(numbers, func(x int) bool {
+		return x > 3
+	})
+	assert.Equal(t, 3, index)
+	assert.Equal(t, 4, value)
+
+	index, value = luban.Find(numbers, func(x int) bool {
+		return x > 10
+	})
+	assert.Equal(t, -1, index)
+	assert.Equal(t, 0, value)
+}
+
+func TestFindMap(t *testing.T) {
+	myMap := map[string]int{
+		"apple":  5,
+		"banana": 10,
+		"cherry": 15,
+	}
+	key, value := luban.FindMap(myMap, func(k string, v int) bool {
+		return v > 10
+	})
+	assert.Equal(t, "cherry", key)
+	assert.Equal(t, 15, value)
+
+	key, value = luban.FindMap(myMap, func(k string, v int) bool {
+		return v > 20
+	})
+	assert.Equal(t, "", key)
+	assert.Equal(t, 0, value)
 }
