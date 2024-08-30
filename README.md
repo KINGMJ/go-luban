@@ -24,7 +24,7 @@ A modern and type-safe Go utility library providing a collection of helpers (Map
 - [x] Some
 - [x] Find
 - [x] Chunk
-
+- [x] Compact
 
 ### Collections (Map)
 

@@ -397,3 +397,53 @@ func TestChunk(t *testing.T) {
 		assert.Equal(t, errors.New("cannot be less than 1"), err)
 	})
 }
+
+func TestCompact(t *testing.T) {
+	t.Run("Compact with int slice", func(t *testing.T) {
+		input := []int{0, 1, 2, 2, 0, 3, 0, 4}
+		expected := []int{1, 2, 2, 3, 4}
+		result := luban.Compact(input)
+		assert.Equal(t, expected, result)
+	})
+
+	t.Run("Compact with string slice", func(t *testing.T) {
+		input := []string{"", "foo", "", "bar", ""}
+		expected := []string{"foo", "bar"}
+		result := luban.Compact(input)
+		assert.Equal(t, expected, result)
+	})
+
+	t.Run("Compact with mixed slice", func(t *testing.T) {
+		type Person struct {
+			Name string
+			Age  int
+		}
+		ch := make(chan int, 1)
+		var x any
+		var y any = 32
+		var fn func(int) bool
+		ptr1 := &x
+		ptr2 := &y
+		input := []any{0, 1, 1, "", nil, true, false, map[int]string{}, ch, Person{}, []*Person{}, []int64{}, x, y, fn, ptr1, ptr2}
+		expected := []any{1, 1, true, y, ptr2}
+		result := luban.Compact(input)
+		assert.Equal(t, expected, result)
+	})
+
+	t.Run("Compact with empty slice", func(t *testing.T) {
+		input := []int{}
+		expected := []int{}
+		result := luban.Compact(input)
+		assert.Equal(t, expected, result)
+	})
+
+	t.Run("Compact with slice of pointers", func(t *testing.T) {
+		a := 1
+		b := 0
+		c := 3
+		input := []*int{&b, nil, &a, &b, &c}
+		expected := []*int{&a, &c}
+		result := luban.Compact(input)
+		assert.Equal(t, expected, result)
+	})
+}

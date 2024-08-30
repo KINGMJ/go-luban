@@ -2,6 +2,7 @@ package luban
 
 import (
 	"errors"
+	"reflect"
 )
 
 // MapFn 是一个通用的映射函数类型，它接受一个类型为 E 的元素，并返回一个类型为 R 的元素
@@ -184,4 +185,34 @@ func Chunk[S ~[]E, E any](s S, n int) ([]S, error) {
 		result = append(result, s[i:i+end])
 	}
 	return result, nil
+}
+
+func Compact[S ~[]E, E any](s S) S {
+	result := make(S, 0, len(s))
+	for _, v := range s {
+		elemVal := reflect.ValueOf(v)
+		kind := elemVal.Kind()
+		if kind == reflect.Ptr || kind == reflect.Interface {
+			elemVal = elemVal.Elem()
+		}
+		switch elemVal.Kind() {
+		case reflect.Invalid:
+			continue
+		case reflect.Func:
+			if elemVal.IsNil() {
+				continue
+			}
+		case reflect.Map, reflect.Slice, reflect.Chan:
+			if elemVal.Len() == 0 {
+				continue
+			}
+		default:
+			defaultValue := reflect.Zero(elemVal.Type()).Interface()
+			if elemVal.Interface() == defaultValue {
+				continue
+			}
+		}
+		result = append(result, v)
+	}
+	return result
 }

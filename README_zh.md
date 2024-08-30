@@ -23,6 +23,7 @@
 - [x] Some
 - [x] Find
 - [x] Chunk
+- [x] Compact
 
 
 
@@ -55,7 +56,7 @@
 go get github.com/KINGMJ/go-luban
 ```
 
-## 注意：
+## 设计理念：
 
 ### 1. 关于`Every`与`Some`对于空切片与空 map 的行为
 
@@ -69,5 +70,10 @@ go get github.com/KINGMJ/go-luban
 
 由于golang支持多返回值，所以`Find`函数可以直接返回找到元素的`key`和`value`，无需再使用`FindIndex`函数。
 
-### 3. 错误处理
+### 3. `Compact` 函数
+
+golang 的 slices 包中有 `Compact` 函数，但它实现的效果是用单个副本替换连续出现的相同元素，它并不等同于去重的功能。实际的使用场景中，对相同元素去重更常见。
+所以像`go-funk`库或者`lodash`的`Compact`函数，都是过滤零值的函数。去重操作我们额外提供一个`Uniq`函数来实现。
+
+### 4. 错误处理
 `go-luban` 对于错误处理的设计原则是：当出现错误时，应该返回错误，而不是抛出异常。这样可以避免不必要的错误处理逻辑，并使代码更加清晰和可读。比如：`Chunk` 函数，如果传入一个小于1的`size`，应该直接返回错误。在`go1.23.0`版本中，它的`Chunk`函数，如果传入了一个小于1的`size`，会直接抛出异常，导致程序崩溃。
