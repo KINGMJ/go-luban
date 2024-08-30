@@ -1,5 +1,9 @@
 package luban
 
+import (
+	"errors"
+)
+
 // MapFn 是一个通用的映射函数类型，它接受一个类型为 E 的元素，并返回一个类型为 R 的元素
 type mapFn[E any, R any] func(E) R
 
@@ -165,4 +169,19 @@ func FindMap[M ~map[K]V, K comparable, V any](m M, f findMapFn[K, V]) (K, V) {
 	var zeroK K
 	var zeroV V
 	return zeroK, zeroV
+}
+
+func Chunk[S ~[]E, E any](s S, n int) ([]S, error) {
+	if n < 1 {
+		return nil, errors.New("cannot be less than 1")
+	}
+	if len(s) == 0 {
+		return []S{}, nil
+	}
+	var result []S
+	for i := 0; i < len(s); i += n {
+		end := min(n, len(s[i:]))
+		result = append(result, s[i:i+end])
+	}
+	return result, nil
 }

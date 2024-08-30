@@ -20,7 +20,11 @@
 - [x] Each
 - [x] EachRight
 - [x] Every
+- [x] Some
 - [x] Find
+- [x] Chunk
+
+
 
 ### 集合操作（Map）
 
@@ -29,6 +33,7 @@
 - [x] ReduceMap
 - [x] EachMap
 - [x] EveryMap
+- [x] SomeMap
 - [x] FindMap
 
 ### 字符串处理
@@ -63,3 +68,6 @@ go get github.com/KINGMJ/go-luban
 ### 2. `Find` 函数
 
 由于golang支持多返回值，所以`Find`函数可以直接返回找到元素的`key`和`value`，无需再使用`FindIndex`函数。
+
+### 3. 错误处理
+`go-luban` 对于错误处理的设计原则是：当出现错误时，应该返回错误，而不是抛出异常。这样可以避免不必要的错误处理逻辑，并使代码更加清晰和可读。比如：`Chunk` 函数，如果传入一个小于1的`size`，应该直接返回错误。在`go1.23.0`版本中，它的`Chunk`函数，如果传入了一个小于1的`size`，会直接抛出异常，导致程序崩溃。

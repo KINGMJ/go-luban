@@ -1,6 +1,7 @@
 package luban_test
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -219,21 +220,18 @@ func TestEachMap(t *testing.T) {
 }
 
 func TestEvery(t *testing.T) {
-	// 所有元素大于0
 	numbers := []int{1, 2, 3, 4, 5}
 	result := luban.Every(numbers, func(n int) bool {
 		return n > 0
 	})
 	assert.True(t, result)
 
-	// 其中有一个元素小于0
 	numbers = []int{1, -2, 3, 4, 5}
 	result = luban.Every(numbers, func(n int) bool {
 		return n > 0
 	})
 	assert.False(t, result)
 
-	// 空切片
 	numbers = []int{}
 	result = luban.Every(numbers, func(n int) bool {
 		return n > 0
@@ -242,21 +240,18 @@ func TestEvery(t *testing.T) {
 }
 
 func TestEveryMap(t *testing.T) {
-	// 所有值大于0
 	dict := map[string]int{"a": 1, "b": 2, "c": 3}
 	result := luban.EveryMap(dict, func(k string, v int) bool {
 		return v > 0
 	})
 	assert.True(t, result)
 
-	// 其中有一个值小于0
 	dict = map[string]int{"a": 1, "b": -2, "c": 3}
 	result = luban.EveryMap(dict, func(k string, v int) bool {
 		return v > 0
 	})
 	assert.False(t, result)
 
-	// 空 map 应该返回 true
 	dict = map[string]int{}
 	result = luban.EveryMap(dict, func(k string, v int) bool {
 		return v > 0
@@ -324,4 +319,81 @@ func TestFindMap(t *testing.T) {
 	})
 	assert.Equal(t, "", key)
 	assert.Equal(t, 0, value)
+}
+
+func TestChunk(t *testing.T) {
+	// Test case 1: Normal scenario with integer slice
+	t.Run("Chunk integer slice", func(t *testing.T) {
+		input := []int{1, 2, 3, 4, 5}
+		expected := [][]int{
+			{1, 2},
+			{3, 4},
+			{5},
+		}
+		result, err := luban.Chunk(input, 2)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	// Test case 2: Chunk size larger than slice length
+	t.Run("Chunk size larger than slice", func(t *testing.T) {
+		input := []int{1, 2, 3}
+		expected := [][]int{
+			{1, 2, 3},
+		}
+		result, err := luban.Chunk(input, 5)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	// Test case 3: Chunk size equal to slice length
+	t.Run("Chunk size equal to slice length", func(t *testing.T) {
+		input := []int{1, 2, 3}
+		expected := [][]int{
+			{1, 2, 3},
+		}
+		result, err := luban.Chunk(input, 3)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	// Test case 4: Chunk size of 1
+	t.Run("Chunk size of 1", func(t *testing.T) {
+		input := []int{1, 2, 3}
+		expected := [][]int{
+			{1},
+			{2},
+			{3},
+		}
+		result, err := luban.Chunk(input, 1)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	// Test case 5: Chunk with empty slice
+	t.Run("Chunk empty slice", func(t *testing.T) {
+		input := []int{}
+		expected := [][]int{}
+		result, err := luban.Chunk(input, 3)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	// Test case 6: Invalid chunk size (zero)
+	t.Run("Invalid chunk size zero", func(t *testing.T) {
+		input := []int{1, 2, 3}
+		result, err := luban.Chunk(input, 0)
+		assert.Error(t, err)
+		assert.Nil(t, result)
+		assert.Equal(t, errors.New("cannot be less than 1"), err)
+	})
+
+	// Test case 7: Invalid chunk size (negative)
+	t.Run("Invalid chunk size negative", func(t *testing.T) {
+		input := []int{1, 2, 3}
+		result, err := luban.Chunk(input, -1)
+		assert.Error(t, err)
+		assert.Nil(t, result)
+		assert.Equal(t, errors.New("cannot be less than 1"), err)
+	})
 }
